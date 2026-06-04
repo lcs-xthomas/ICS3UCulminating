@@ -1,0 +1,20 @@
+[
+    {
+        "id": "550e8400-e29b-41d4-a716-446655440000",
+        "targetWord": "SWIFT",
+        "scrambledWord": "IFWTS",
+        "hint": "A powerful and intuitive programming language for iOS."
+    },
+    {
+        "id": "550e8400-e29b-41d4-a716-446655440001",
+        "targetWord": "APPLE",
+        "scrambledWord": "ELPPA",
+        "hint": "A fruit that is also a famous tech company."
+    },
+    {
+        "id": "550e8400-e29b-41d4-a716-446655440002",
+        "targetWord": "XCODE",
+        "scrambledWord": "DECOX",
+        "hint": "The IDE used to build apps for Apple platforms."
+    }
+]
