@@ -1,8 +1,3 @@
-//
-//  GameViewModel.swift
-//  ICS3UCulminating
-//
-
 import Foundation
 import Observation
 
@@ -15,7 +10,6 @@ class GameViewModel {
     var userGuess: String = ""
     var score: Int = 0
     var highScore: Int = 0
-    var wordsSolved: Int = 0
     var feedbackMessage: String = ""
     var displayScrambledWord: String = ""
     
@@ -32,28 +26,25 @@ class GameViewModel {
     
     // MARK: - Initializer
     init() {
-        self.loadGameData()
+        self.words = WordModel.sampleWords
+        self.highScore = JSONStorageService.loadHighScore()
+        
+        // Start the first round
+        self.setupNewRound()
     }
     
     // MARK: - Functions
     
-    /// Loads the word list and previous high score data.
-    func loadGameData() {
-        // Load words from the bundle
-        self.words = JSONStorageService.shared.loadWordsFromBundle()
-        
-        // Load existing score data
-        let savedScore = JSONStorageService.shared.loadScore()
-        self.highScore = savedScore.highHighScore
-        self.wordsSolved = savedScore.wordsSolved
-        
-        // Set the initial scrambled word
-        if let firstWord = currentWord {
-            displayScrambledWord = firstWord.scrambledWord
+    /// Prepares a new round by resetting state and picking a word.
+    func setupNewRound() {
+        if let word = currentWord {
+            displayScrambledWord = word.scrambledWord
         }
+        userGuess = ""
+        feedbackMessage = "Guess the word!"
     }
     
-    /// Checks if the user's guess matches the target word.
+    /// Checks the user's guess against the target word.
     func checkGuess() {
         guard let target = currentWord?.targetWord else {
             return
@@ -61,66 +52,57 @@ class GameViewModel {
         
         if userGuess.uppercased() == target.uppercased() {
             score += 10
-            wordsSolved += 1
-            feedbackMessage = "Correct! Well done."
+            feedbackMessage = "Correct! +10 points"
             
-            // Check for new high score
+            // Update high score if needed
             if score > highScore {
                 highScore = score
-                saveProgress()
+                JSONStorageService.saveHighScore(highScore)
             }
             
-            // Move to next word
+            // Move to next word after a short delay or immediately
             self.nextWord()
         } else {
-            feedbackMessage = "Try again!"
+            feedbackMessage = "Not quite. Try again!"
         }
-    }
-    
-    /// Skips the current word and moves to the next one.
-    func skipWord() {
-        feedbackMessage = "Skipped. The word was: \(currentWord?.targetWord ?? "")"
-        self.nextWord()
     }
     
     /// Advances to the next word in the list.
     func nextWord() {
-        userGuess = ""
         if currentWordIndex < words.count - 1 {
             currentWordIndex += 1
         } else {
-            // Reset to beginning
+            // Loop back to the start or finish game
             currentWordIndex = 0
-            feedbackMessage = "Back to the start!"
         }
         
-        // Update the display word
-        if let nextWordModel = currentWord {
-            displayScrambledWord = nextWordModel.scrambledWord
-        }
+        self.setupNewRound()
     }
     
-    /// Re-shuffles the current scrambled word for the user.
-    func shuffleCurrentWord() {
-        if let word = currentWord {
-            displayScrambledWord = self.shuffleLetters(in: word.targetWord)
-        }
+    /// Skips the current word.
+    func skipWord() {
+        feedbackMessage = "Skipped. The word was \(currentWord?.targetWord ?? "")."
+        self.nextWord()
     }
     
-    /// Shuffles the letters of a string manually.
-    func shuffleLetters(in word: String) -> String {
-        var chars = Array(word)
-        // Fisher-Yates shuffle algorithm
-        for i in 0..<(chars.count - 1) {
-            let j = Int.random(in: i..<chars.count)
-            chars.swapAt(i, j)
+    /// Shuffles the current scrambled word again.
+    func shuffleAgain() {
+        guard let target = currentWord?.targetWord else { return }
+        
+        var characters = Array(target)
+        // Manual Fisher-Yates shuffle to follow style guidelines (explicit loops)
+        for i in 0..<(characters.count - 1) {
+            let j = Int.random(in: i..<characters.count)
+            characters.swapAt(i, j)
         }
-        return String(chars)
+        
+        displayScrambledWord = String(characters)
     }
     
-    /// Persists the current high score and progress.
-    func saveProgress() {
-        let scoreToSave = ScoreModel(highHighScore: highScore, wordsSolved: wordsSolved)
-        JSONStorageService.shared.saveScore(scoreToSave)
+    /// Resets the game to the beginning.
+    func restartGame() {
+        score = 0
+        currentWordIndex = 0
+        self.setupNewRound()
     }
 }

@@ -39,7 +39,7 @@ struct JSONStorageService {
         do {
             let data = try Data(contentsOf: url)
             let decoder = JSONDecoder()
-            let score = try decoder.decode(Int.self, data)
+            let score = try decoder.decode(Int.self, from: data)
             return score
         } catch {
             print("Unable to load high score: \(error.localizedDescription)")
