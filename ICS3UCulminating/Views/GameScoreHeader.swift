@@ -1,8 +1,3 @@
-//
-//  GameScoreHeader.swift
-//  ICS3UCulminating
-//
-
 import SwiftUI
 
 struct GameScoreHeader: View {
@@ -15,33 +10,39 @@ struct GameScoreHeader: View {
     var body: some View {
         HStack {
             VStack(alignment: .leading) {
-                Text("Score")
+                Text("SCORE")
                     .font(.caption)
-                    .foregroundColor(.secondary)
-                Text("\(score)")
-                    .font(.title2)
                     .fontWeight(.bold)
+                    .foregroundStyle(.secondary)
+                Text("\(score)")
+                    .font(.title)
+                    .fontWeight(.black)
             }
             
             Spacer()
             
             VStack(alignment: .trailing) {
-                Text("High Score")
+                Text("HIGH SCORE")
                     .font(.caption)
-                    .foregroundColor(.secondary)
-                Text("\(highScore)")
-                    .font(.title2)
                     .fontWeight(.bold)
-                    .foregroundColor(.orange)
+                    .foregroundStyle(.secondary)
+                Text("\(highScore)")
+                    .font(.title)
+                    .fontWeight(.black)
             }
         }
         .padding()
-        .background(Color(uiColor: .secondarySystemBackground))
-        .clipShape(RoundedRectangle(cornerRadius: 15))
+        .background {
+            RoundedRectangle(cornerRadius: 16)
+                .fill(.background)
+                .shadow(color: .black.opacity(0.1), radius: 10)
+        }
+        .padding(.horizontal)
     }
 }
 
 #Preview {
     GameScoreHeader(score: 120, highScore: 500)
         .padding()
+        .background(.gray.opacity(0.1))
 }

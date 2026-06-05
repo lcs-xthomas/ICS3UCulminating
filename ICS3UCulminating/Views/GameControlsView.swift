@@ -1,53 +1,65 @@
-//
-//  GameControlsView.swift
-//  ICS3UCulminating
-//
-
 import SwiftUI
 
 struct GameControlsView: View {
     
     // MARK: - Stored properties
-    @Bindable var viewModel: GameViewModel
+    var viewModel: GameViewModel
     
     // MARK: - Body
     var body: some View {
-        VStack(spacing: 20) {
-            TextField("Type your guess here...", text: $viewModel.userGuess)
-                .textFieldStyle(.roundedBorder)
-                .font(.title3)
-                .multilineTextAlignment(.center)
-                .autocorrectionDisabled()
-                .textInputAutocapitalization(.characters)
-                .onSubmit {
-                    viewModel.checkGuess()
-                }
+        VStack(spacing: 15) {
+            Button(action: {
+                viewModel.checkGuess()
+            }) {
+                Text("Submit")
+                    .font(.headline)
+                    .foregroundStyle(.white)
+                    .frame(maxWidth: .infinity)
+                    .padding()
+                    .background(viewModel.userGuess.isEmpty ? .gray : .blue)
+                    .clipShape(RoundedRectangle(cornerRadius: 12))
+            }
+            .disabled(viewModel.userGuess.isEmpty)
             
             HStack(spacing: 15) {
                 Button(action: {
-                    viewModel.checkGuess()
+                    viewModel.shuffleAgain()
                 }) {
-                    Text("Submit")
-                        .fontWeight(.semibold)
-                        .frame(maxWidth: .infinity)
+                    Label("Shuffle", systemImage: "shuffle")
+                        .font(.subheadline)
                         .padding()
-                        .background(Color.accentColor)
-                        .foregroundColor(.white)
-                        .clipShape(RoundedRectangle(cornerRadius: 10))
+                        .frame(maxWidth: .infinity)
+                        .background(.orange.opacity(0.1))
+                        .foregroundStyle(.orange)
+                        .clipShape(RoundedRectangle(cornerRadius: 12))
                 }
                 
                 Button(action: {
                     viewModel.skipWord()
                 }) {
-                    Text("Skip")
-                        .fontWeight(.semibold)
-                        .frame(maxWidth: .infinity)
+                    Label("Skip", systemImage: "arrow.right.circle")
+                        .font(.subheadline)
                         .padding()
-                        .background(Color.secondary.opacity(0.2))
-                        .foregroundColor(.primary)
-                        .clipShape(RoundedRectangle(cornerRadius: 10))
+                        .frame(maxWidth: .infinity)
+                        .background(.secondary.opacity(0.1))
+                        .foregroundStyle(.secondary)
+                        .clipShape(RoundedRectangle(cornerRadius: 12))
                 }
             }
+            
+            Button(action: {
+                viewModel.restartGame()
+            }) {
+                Text("Restart Game")
+                    .font(.caption)
+                    .foregroundStyle(.red)
+                    .padding(.top, 5)
+            }
         }
+        .padding(.horizontal)
     }
+}
+
+#Preview {
+    GameControlsView(viewModel: GameViewModel())
 }
