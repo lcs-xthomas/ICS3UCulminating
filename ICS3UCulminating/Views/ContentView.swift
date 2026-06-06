@@ -11,8 +11,12 @@ struct ContentView: View {
             VStack(spacing: 30) {
                 
                 // Score Header
-                GameScoreHeader(score: viewModel.score, highScore: viewModel.highScore)
-                    .padding(.top)
+                GameScoreHeader(
+                    score: viewModel.score,
+                    highScore: viewModel.highScore,
+                    isNewHighScore: viewModel.isNewHighScore
+                )
+                .padding(.top)
                 
                 Spacer()
                 

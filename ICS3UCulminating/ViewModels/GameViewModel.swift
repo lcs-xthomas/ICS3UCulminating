@@ -12,6 +12,7 @@ class GameViewModel {
     var highScore: Int = 0
     var feedbackMessage: String = ""
     var displayScrambledWord: String = ""
+    var isNewHighScore: Bool = false
     
     // MARK: - Computed properties
     var currentWord: WordModel? {
@@ -46,6 +47,8 @@ class GameViewModel {
     
     /// Checks the user's guess against the target word.
     func checkGuess() {
+        isNewHighScore = false
+        
         guard let target = currentWord?.targetWord else {
             return
         }
@@ -57,6 +60,7 @@ class GameViewModel {
             // Update high score if needed
             if score > highScore {
                 highScore = score
+                isNewHighScore = true
                 JSONStorageService.saveHighScore(highScore)
             }
             
@@ -103,6 +107,7 @@ class GameViewModel {
     func restartGame() {
         score = 0
         currentWordIndex = 0
+        isNewHighScore = false
         self.setupNewRound()
     }
 }

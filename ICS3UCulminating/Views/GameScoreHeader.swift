@@ -5,6 +5,7 @@ struct GameScoreHeader: View {
     // MARK: - Stored properties
     let score: Int
     let highScore: Int
+    let isNewHighScore: Bool
     
     // MARK: - Body
     var body: some View {
@@ -25,10 +26,14 @@ struct GameScoreHeader: View {
                 Text("HIGH SCORE")
                     .font(.caption)
                     .fontWeight(.bold)
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(isNewHighScore ? .orange : .secondary)
+                
                 Text("\(highScore)")
                     .font(.title)
                     .fontWeight(.black)
+                    .foregroundStyle(isNewHighScore ? .orange : .primary)
+                    .scaleEffect(isNewHighScore ? 1.2 : 1.0)
+                    .animation(.spring(response: 0.4, dampingFraction: 0.5), value: isNewHighScore)
             }
         }
         .padding()
@@ -42,7 +47,10 @@ struct GameScoreHeader: View {
 }
 
 #Preview {
-    GameScoreHeader(score: 120, highScore: 500)
-        .padding()
-        .background(.gray.opacity(0.1))
+    VStack {
+        GameScoreHeader(score: 120, highScore: 500, isNewHighScore: false)
+        GameScoreHeader(score: 550, highScore: 550, isNewHighScore: true)
+    }
+    .padding()
+    .background(.gray.opacity(0.1))
 }
