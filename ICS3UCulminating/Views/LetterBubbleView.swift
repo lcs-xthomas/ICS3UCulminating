@@ -10,11 +10,15 @@ struct LetterBubbleView: View {
         Text(String(letter).uppercased())
             .font(.title)
             .fontWeight(.bold)
-            .foregroundStyle(.white)
-            .frame(width: 50, height: 60)
+            .foregroundStyle(Color.white)
+            .minimumScaleFactor(0.5)
+            .lineLimit(1)
+            .frame(maxWidth: 50)
+            .frame(height: 60)
+            .frame(maxWidth: .infinity)
             .background {
                 RoundedRectangle(cornerRadius: 12)
-                    .fill(.blue.gradient)
+                    .fill(Color.blue.gradient)
                     .shadow(radius: 3, y: 2)
             }
     }

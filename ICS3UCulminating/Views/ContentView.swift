@@ -121,6 +121,7 @@ struct MainMenuView: View {
 // MARK: - Game View Subview
 struct GameView: View {
     @Environment(GameViewModel.self) var viewModel
+    @FocusState private var isTextFieldFocused: Bool
     
     var body: some View {
         VStack(spacing: 20) {
@@ -148,11 +149,13 @@ struct GameView: View {
                         .clipShape(Capsule())
                 }
                 
+                // Scrambled Word Display
                 HStack(spacing: 8) {
                     ForEach(Array(viewModel.displayScrambledWord.enumerated()), id: \.offset) { _, letter in
                         LetterBubbleView(letter: letter)
                     }
                 }
+                .padding(.horizontal)
                 .padding(.vertical, 10)
             }
             
@@ -169,6 +172,7 @@ struct GameView: View {
             
             // User Input
             TextField("TYPE GUESS HERE", text: Bindable(viewModel).userGuess)
+                .focused($isTextFieldFocused)
                 .textFieldStyle(.plain)
                 .font(.system(.title2, design: .rounded, weight: .bold))
                 .padding()
@@ -180,8 +184,11 @@ struct GameView: View {
                 .padding(.horizontal)
                 .multilineTextAlignment(.center)
                 .textInputAutocapitalization(.characters)
+                .autocorrectionDisabled(true)
                 .onSubmit {
                     viewModel.checkGuess()
+                    // Maintain focus after submitting
+                    isTextFieldFocused = true
                 }
             
             Spacer()
@@ -189,6 +196,10 @@ struct GameView: View {
             // Controls
             GameControlsView(viewModel: viewModel)
                 .padding(.bottom)
+        }
+        .onAppear {
+            // Auto-focus when the game view appears
+            isTextFieldFocused = true
         }
     }
 }
