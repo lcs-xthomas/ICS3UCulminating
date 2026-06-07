@@ -128,19 +128,27 @@ class GameViewModel {
         self.setupNewRound()
     }
     
-    /// Skips the current word with a penalty.
+    /// Skips the current word with a penalty, only if the user has enough points.
     func skipWord() {
-        score -= 10
-        feedbackMessage = "Skipped. -10 points."
-        self.nextWord()
+        if score >= 10 {
+            score -= 10
+            feedbackMessage = "Skipped. -10 points."
+            self.nextWord()
+        } else {
+            feedbackMessage = "Not enough points to skip!"
+        }
     }
     
-    /// Reveals the hint for a point penalty.
+    /// Reveals the hint for a point penalty, only if the user has enough points.
     func revealHint() {
         if !isHintRevealed {
-            score -= 5
-            isHintRevealed = true
-            feedbackMessage = "Hint revealed! -5 points."
+            if score >= 5 {
+                score -= 5
+                isHintRevealed = true
+                feedbackMessage = "Hint revealed! -5 points."
+            } else {
+                feedbackMessage = "Not enough points for a hint!"
+            }
         }
     }
     

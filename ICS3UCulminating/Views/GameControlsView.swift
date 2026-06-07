@@ -16,7 +16,7 @@ struct GameControlsView: View {
                         Text(hint)
                             .font(.subheadline)
                             .italic()
-                            .foregroundStyle(.secondary)
+                            .foregroundStyle(Color.secondary)
                             .multilineTextAlignment(.center)
                             .padding(.horizontal)
                             .transition(.opacity.combined(with: .move(edge: .top)))
@@ -32,10 +32,11 @@ struct GameControlsView: View {
                             .fontWeight(.bold)
                             .padding(.vertical, 10)
                             .padding(.horizontal, 20)
-                            .background(.orange.opacity(0.1))
-                            .foregroundStyle(.orange)
+                            .background(viewModel.score < 5 ? Color.secondary.opacity(0.1) : Color.orange.opacity(0.1))
+                            .foregroundStyle(viewModel.score < 5 ? Color.secondary : Color.orange)
                             .clipShape(Capsule())
                     }
+                    .disabled(viewModel.score < 5)
                 }
             }
             .frame(height: 50)
@@ -47,18 +48,18 @@ struct GameControlsView: View {
                 Text("SUBMIT")
                     .font(.headline)
                     .fontWeight(.black)
-                    .foregroundStyle(.white)
+                    .foregroundStyle(Color.white)
                     .frame(maxWidth: .infinity)
                     .padding(.vertical, 18)
-                    .background(viewModel.userGuess.isEmpty ? .gray : .orange)
+                    .background(viewModel.userGuess.isEmpty ? Color.gray : Color.orange)
                     .clipShape(RoundedRectangle(cornerRadius: 15))
-                    .shadow(color: viewModel.userGuess.isEmpty ? .clear : .orange.opacity(0.3), radius: 10, y: 5)
+                    .shadow(color: viewModel.userGuess.isEmpty ? Color.clear : Color.orange.opacity(0.3), radius: 10, y: 5)
             }
             .disabled(viewModel.userGuess.isEmpty)
             
             // Secondary Controls
             HStack(spacing: 15) {
-                // Shuffle Button
+                // Shuffle Button (Always Enabled and Free)
                 Button(action: {
                     withAnimation(.spring()) {
                         viewModel.shuffleAgain()
@@ -73,8 +74,8 @@ struct GameControlsView: View {
                     }
                     .frame(maxWidth: .infinity)
                     .padding(.vertical, 12)
-                    .background(.orange.opacity(0.1))
-                    .foregroundStyle(.orange)
+                    .background(Color.orange.opacity(0.1))
+                    .foregroundStyle(Color.orange)
                     .clipShape(RoundedRectangle(cornerRadius: 12))
                 }
                 
@@ -93,10 +94,11 @@ struct GameControlsView: View {
                     }
                     .frame(maxWidth: .infinity)
                     .padding(.vertical, 12)
-                    .background(.red.opacity(0.1))
-                    .foregroundStyle(.red)
+                    .background(viewModel.score < 10 ? Color.secondary.opacity(0.1) : Color.red.opacity(0.1))
+                    .foregroundStyle(viewModel.score < 10 ? Color.secondary : Color.red)
                     .clipShape(RoundedRectangle(cornerRadius: 12))
                 }
+                .disabled(viewModel.score < 10)
             }
             
             // Restart Button
@@ -108,7 +110,7 @@ struct GameControlsView: View {
                 Text("RESTART GAME")
                     .font(.caption)
                     .fontWeight(.black)
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(Color.secondary)
                     .padding(.top, 5)
             }
         }
