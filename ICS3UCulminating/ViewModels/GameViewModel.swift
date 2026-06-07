@@ -16,6 +16,7 @@ class GameViewModel {
     var isNewHighScore: Bool = false
     var selectedCategory: String = "All"
     var isGameActive: Bool = false
+    var isHintRevealed: Bool = false
     
     // MARK: - Computed properties
     var categories: [String] {
@@ -74,6 +75,7 @@ class GameViewModel {
     func goBackToMenu() {
         isGameActive = false
         score = 0
+        currentWordIndex = 0
     }
     
     /// Prepares a new round by resetting state and picking a word.
@@ -83,6 +85,7 @@ class GameViewModel {
         }
         userGuess = ""
         feedbackMessage = "Guess the word!"
+        isHintRevealed = false
     }
     
     /// Checks the user's guess against the target word.
@@ -125,10 +128,20 @@ class GameViewModel {
         self.setupNewRound()
     }
     
-    /// Skips the current word.
+    /// Skips the current word with a penalty.
     func skipWord() {
-        feedbackMessage = "Skipped. The word was \(currentWord?.targetWord ?? "")."
+        score -= 10
+        feedbackMessage = "Skipped. -10 points."
         self.nextWord()
+    }
+    
+    /// Reveals the hint for a point penalty.
+    func revealHint() {
+        if !isHintRevealed {
+            score -= 5
+            isHintRevealed = true
+            feedbackMessage = "Hint revealed! -5 points."
+        }
     }
     
     /// Shuffles the current scrambled word again.
