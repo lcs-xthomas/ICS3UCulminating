@@ -5,7 +5,8 @@ import Observation
 class GameViewModel {
     
     // MARK: - Stored properties
-    var words: [WordModel] = []
+    var allWords: [WordModel] = []
+    var filteredWords: [WordModel] = []
     var currentWordIndex: Int = 0
     var userGuess: String = ""
     var score: Int = 0
@@ -13,28 +14,62 @@ class GameViewModel {
     var feedbackMessage: String = ""
     var displayScrambledWord: String = ""
     var isNewHighScore: Bool = false
+    var selectedCategory: String = "All"
     
     // MARK: - Computed properties
+    var categories: [String] {
+        var uniqueCategories = Set<String>()
+        uniqueCategories.insert("All")
+        for word in allWords {
+            uniqueCategories.insert(word.category)
+        }
+        return Array(uniqueCategories).sorted()
+    }
+    
     var currentWord: WordModel? {
-        if words.isEmpty {
+        if filteredWords.isEmpty {
             return nil
         }
-        if currentWordIndex < words.count {
-            return words[currentWordIndex]
+        if currentWordIndex < filteredWords.count {
+            return filteredWords[currentWordIndex]
         }
         return nil
     }
     
     // MARK: - Initializer
     init() {
-        self.words = WordModel.sampleWords
+        self.allWords = WordModel.sampleWords
         self.highScore = JSONStorageService.loadHighScore()
+        self.filterWords()
         
         // Start the first round
         self.setupNewRound()
     }
     
     // MARK: - Functions
+    
+    /// Filters the word list based on the selected category.
+    func filterWords() {
+        if selectedCategory == "All" {
+            filteredWords = allWords
+        } else {
+            var results: [WordModel] = []
+            for word in allWords {
+                if word.category == selectedCategory {
+                    results.append(word)
+                }
+            }
+            filteredWords = results
+        }
+        currentWordIndex = 0
+    }
+    
+    /// Updates the selected category and resets the game for that category.
+    func selectCategory(_ category: String) {
+        selectedCategory = category
+        filterWords()
+        setupNewRound()
+    }
     
     /// Prepares a new round by resetting state and picking a word.
     func setupNewRound() {
@@ -73,10 +108,12 @@ class GameViewModel {
     
     /// Advances to the next word in the list.
     func nextWord() {
-        if currentWordIndex < words.count - 1 {
+        if filteredWords.isEmpty { return }
+        
+        if currentWordIndex < filteredWords.count - 1 {
             currentWordIndex += 1
         } else {
-            // Loop back to the start or finish game
+            // Loop back to the start
             currentWordIndex = 0
         }
         
