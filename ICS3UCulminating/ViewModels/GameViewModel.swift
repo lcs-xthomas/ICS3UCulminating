@@ -15,6 +15,7 @@ class GameViewModel {
     var displayScrambledWord: String = ""
     var isNewHighScore: Bool = false
     var selectedCategory: String = "All"
+    var isGameActive: Bool = false
     
     // MARK: - Computed properties
     var categories: [String] {
@@ -41,9 +42,6 @@ class GameViewModel {
         self.allWords = WordModel.sampleWords
         self.highScore = JSONStorageService.loadHighScore()
         self.filterWords()
-        
-        // Start the first round
-        self.setupNewRound()
     }
     
     // MARK: - Functions
@@ -64,11 +62,18 @@ class GameViewModel {
         currentWordIndex = 0
     }
     
-    /// Updates the selected category and resets the game for that category.
+    /// Updates the selected category and starts the game for that category.
     func selectCategory(_ category: String) {
         selectedCategory = category
         filterWords()
         setupNewRound()
+        isGameActive = true
+    }
+    
+    /// Returns to the main menu.
+    func goBackToMenu() {
+        isGameActive = false
+        score = 0
     }
     
     /// Prepares a new round by resetting state and picking a word.

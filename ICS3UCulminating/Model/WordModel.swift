@@ -36,7 +36,22 @@ extension WordModel {
             // Food Category
             WordModel(targetWord: "PIZZA", scrambledWord: "ZZIPA", hint: "A cheesy Italian dish with a crust.", category: "Food"),
             WordModel(targetWord: "BURGER", scrambledWord: "RREBUG", hint: "A sandwich with a meat patty and bun.", category: "Food"),
-            WordModel(targetWord: "PASTA", scrambledWord: "ASTAP", hint: "Italian noodles often served with sauce.", category: "Food")
+            WordModel(targetWord: "PASTA", scrambledWord: "ASTAP", hint: "Italian noodles often served with sauce.", category: "Food"),
+            
+            // Sports Category
+            WordModel(targetWord: "SOCCER", scrambledWord: "CCEROS", hint: "A sport where players kick a ball into a net.", category: "Sports"),
+            WordModel(targetWord: "TENNIS", scrambledWord: "NNITES", hint: "Played with rackets and a small yellow ball.", category: "Sports"),
+            WordModel(targetWord: "HOCKEY", scrambledWord: "YEKCOH", hint: "Played on ice with skates and a puck.", category: "Sports"),
+            
+            // Colors Category
+            WordModel(targetWord: "PURPLE", scrambledWord: "ELPRUP", hint: "A color made by mixing red and blue.", category: "Colors"),
+            WordModel(targetWord: "ORANGE", scrambledWord: "GNERAO", hint: "The color of a common citrus fruit.", category: "Colors"),
+            WordModel(targetWord: "YELLOW", scrambledWord: "WOLLEY", hint: "The color of the sun or a banana.", category: "Colors"),
+            
+            // Countries Category
+            WordModel(targetWord: "CANADA", scrambledWord: "DAANCA", hint: "A large country in North America.", category: "Countries"),
+            WordModel(targetWord: "FRANCE", scrambledWord: "ECNARF", hint: "A European country famous for the Eiffel Tower.", category: "Countries"),
+            WordModel(targetWord: "BRAZIL", scrambledWord: "LIZARB", hint: "A South American country famous for Carnival.", category: "Countries")
         ]
         return words
     }
