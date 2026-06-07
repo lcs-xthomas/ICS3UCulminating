@@ -17,6 +17,7 @@ class GameViewModel {
     var selectedCategory: String = "All"
     var isGameActive: Bool = false
     var isHintRevealed: Bool = false
+    var isCategoryFinished: Bool = false
     
     // MARK: - Computed properties
     var categories: [String] {
@@ -67,6 +68,7 @@ class GameViewModel {
     func selectCategory(_ category: String) {
         selectedCategory = category
         filterWords()
+        isCategoryFinished = false
         setupNewRound()
         isGameActive = true
     }
@@ -74,6 +76,7 @@ class GameViewModel {
     /// Returns to the main menu.
     func goBackToMenu() {
         isGameActive = false
+        isCategoryFinished = false
         score = 0
         currentWordIndex = 0
     }
@@ -114,18 +117,17 @@ class GameViewModel {
         }
     }
     
-    /// Advances to the next word in the list.
+    /// Advances to the next word in the list or finishes the category.
     func nextWord() {
         if filteredWords.isEmpty { return }
         
         if currentWordIndex < filteredWords.count - 1 {
             currentWordIndex += 1
+            self.setupNewRound()
         } else {
-            // Loop back to the start
-            currentWordIndex = 0
+            // Reached the end of the list
+            isCategoryFinished = true
         }
-        
-        self.setupNewRound()
     }
     
     /// Skips the current word with a penalty, only if the user has enough points.
@@ -171,6 +173,7 @@ class GameViewModel {
         score = 0
         currentWordIndex = 0
         isNewHighScore = false
+        isCategoryFinished = false
         self.setupNewRound()
     }
 }

@@ -15,16 +15,20 @@ struct ContentView: View {
                 
                 Group {
                     if viewModel.isGameActive {
-                        GameView()
+                        if viewModel.isCategoryFinished {
+                            CategoryCompletedView()
+                        } else {
+                            GameView()
+                        }
                     } else {
                         MainMenuView()
                     }
                 }
             }
-            .navigationTitle(viewModel.isGameActive ? "Anagrams" : "")
+            .navigationTitle(viewModel.isGameActive ? (viewModel.isCategoryFinished ? "Success!" : "Anagrams") : "")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                if viewModel.isGameActive {
+                if viewModel.isGameActive && !viewModel.isCategoryFinished {
                     ToolbarItem(placement: .topBarLeading) {
                         Button(action: {
                             withAnimation(.spring()) {
@@ -36,7 +40,7 @@ struct ContentView: View {
                                 Text("Menu")
                             }
                             .fontWeight(.medium)
-                            .foregroundStyle(.orange)
+                            .foregroundStyle(Color.orange)
                         }
                     }
                 }
@@ -55,23 +59,23 @@ struct MainMenuView: View {
             VStack(spacing: 10) {
                 Image(systemName: "text.justify.left")
                     .font(.system(size: 60))
-                    .foregroundStyle(.white)
+                    .foregroundStyle(Color.white)
                     .padding()
                     .background {
                         Circle()
-                            .fill(.orange.gradient)
-                            .shadow(color: .orange.opacity(0.3), radius: 10, y: 5)
+                            .fill(Color.orange.gradient)
+                            .shadow(color: Color.orange.opacity(0.3), radius: 10, y: 5)
                     }
                 
                 Text("ANAGRAMS")
                     .font(.system(size: 34, weight: .black, design: .rounded))
                     .tracking(4)
-                    .foregroundStyle(.orange.gradient)
+                    .foregroundStyle(Color.orange.gradient)
                 
                 Text("Pick a category to start")
                     .font(.subheadline)
                     .fontWeight(.medium)
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(Color.secondary)
             }
             .padding(.top, 40)
             .padding(.bottom, 30)
@@ -94,17 +98,17 @@ struct MainMenuView: View {
                                 
                                 Image(systemName: "play.circle.fill")
                                     .font(.title2)
-                                    .foregroundStyle(.orange.gradient)
+                                    .foregroundStyle(Color.orange.gradient)
                             }
                             .padding(.vertical, 20)
                             .padding(.horizontal, 24)
                             .background {
                                 RoundedRectangle(cornerRadius: 20)
-                                    .fill(.white)
-                                    .shadow(color: .black.opacity(0.05), radius: 8, y: 4)
+                                    .fill(Color.white)
+                                    .shadow(color: Color.black.opacity(0.05), radius: 8, y: 4)
                             }
                         }
-                        .foregroundStyle(.primary)
+                        .foregroundStyle(Color.primary)
                     }
                 }
                 .padding(.horizontal)
@@ -137,10 +141,10 @@ struct GameView: View {
                     Text(viewModel.selectedCategory.uppercased())
                         .font(.caption)
                         .fontWeight(.black)
-                        .foregroundStyle(.orange)
+                        .foregroundStyle(Color.orange)
                         .padding(.horizontal, 12)
                         .padding(.vertical, 4)
-                        .background(.orange.opacity(0.1))
+                        .background(Color.orange.opacity(0.1))
                         .clipShape(Capsule())
                 }
                 
@@ -156,12 +160,12 @@ struct GameView: View {
             Text(viewModel.feedbackMessage)
                 .font(.callout)
                 .fontWeight(.bold)
-                .foregroundStyle(viewModel.feedbackMessage.contains("Correct") ? .green : .orange)
+                .foregroundStyle(viewModel.feedbackMessage.contains("Correct") ? Color.green : Color.orange)
                 .padding(.vertical, 8)
                 .padding(.horizontal, 20)
-                .background(viewModel.feedbackMessage.isEmpty ? .clear : Color(.systemBackground))
+                .background(viewModel.feedbackMessage.isEmpty ? Color.clear : Color(.systemBackground))
                 .clipShape(Capsule())
-                .shadow(color: .black.opacity(0.05), radius: 5)
+                .shadow(color: Color.black.opacity(0.05), radius: 5)
             
             // User Input
             TextField("TYPE GUESS HERE", text: Bindable(viewModel).userGuess)
@@ -170,8 +174,8 @@ struct GameView: View {
                 .padding()
                 .background {
                     RoundedRectangle(cornerRadius: 15)
-                        .fill(.white)
-                        .shadow(color: .black.opacity(0.05), radius: 5)
+                        .fill(Color.white)
+                        .shadow(color: Color.black.opacity(0.05), radius: 5)
                 }
                 .padding(.horizontal)
                 .multilineTextAlignment(.center)
@@ -186,6 +190,72 @@ struct GameView: View {
             GameControlsView(viewModel: viewModel)
                 .padding(.bottom)
         }
+    }
+}
+
+// MARK: - Category Completed Subview
+struct CategoryCompletedView: View {
+    @Environment(GameViewModel.self) var viewModel
+    
+    var body: some View {
+        VStack(spacing: 30) {
+            Image(systemName: "trophy.fill")
+                .font(.system(size: 80))
+                .foregroundStyle(Color.orange.gradient)
+                .padding(.top, 40)
+            
+            VStack(spacing: 10) {
+                Text("Category Completed!")
+                    .font(.title)
+                    .fontWeight(.black)
+                
+                Text("You've unscrambled all words in")
+                    .font(.subheadline)
+                    .foregroundStyle(Color.secondary)
+                
+                Text(viewModel.selectedCategory)
+                    .font(.headline)
+                    .foregroundStyle(Color.orange)
+            }
+            
+            VStack(spacing: 5) {
+                Text("FINAL SCORE")
+                    .font(.caption)
+                    .fontWeight(.bold)
+                    .foregroundStyle(Color.secondary)
+                
+                Text("\(viewModel.score)")
+                    .font(.system(size: 60, weight: .black, design: .rounded))
+                    .foregroundStyle(Color.orange.gradient)
+            }
+            .padding()
+            .frame(width: 200)
+            .background {
+                RoundedRectangle(cornerRadius: 20)
+                    .fill(Color.white)
+                    .shadow(color: Color.black.opacity(0.05), radius: 10)
+            }
+            
+            Spacer()
+            
+            Button(action: {
+                withAnimation(.spring()) {
+                    viewModel.goBackToMenu()
+                }
+            }) {
+                Text("BACK TO MENU")
+                    .font(.headline)
+                    .fontWeight(.black)
+                    .foregroundStyle(Color.white)
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 18)
+                    .background(Color.orange)
+                    .clipShape(RoundedRectangle(cornerRadius: 15))
+                    .padding(.horizontal)
+            }
+            .padding(.bottom, 40)
+        }
+        .padding()
     }
 }
 
